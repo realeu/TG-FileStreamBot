@@ -27,7 +27,7 @@ async def media_receive_handler(_, m: Message):
     if not (rm.document or rm.video or rm.audio):
         return await rm.reply_text('Invalid Media!', quote=True)
     file_name = ''
-    file = detect_types(rm)
+    file = detect_type(rm)
     if file:
         file_name = file.file_name
     log_msg = await rm.forward(chat_id=Var.BIN_CHANNEL)

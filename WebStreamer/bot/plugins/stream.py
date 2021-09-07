@@ -8,27 +8,19 @@ from WebStreamer.bot import StreamBot
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
-def detect_type(m: Message):
-    if m.document:
-        return m.document
-    elif m.video:
-        return m.video
-    elif m.audio:
-        return m.audio
-    else:
-        return
-    
-
-@StreamBot.on_message(filters.private & (filters.document | filters.video | filters.audio), group=4)
+@StreamBot.on_message(filters.command("link") & filters.private, group=2)
 async def media_receive_handler(_, m: Message):
-    file = detect_type(m)
+    rm = m.reply_to_message
+    if not (rm and rm.media):
+        return
+    if not (rm.document or rm.video or rm.audio):
+        return await rm.reply_text('Invalid Media!', quote=True)
     file_name = ''
-    if file:
-        file_name = file.file_name
-    log_msg = await m.forward(chat_id=Var.BIN_CHANNEL)
+    file_name = rm.file_name
+    log_msg = await rm.forward(chat_id=Var.BIN_CHANNEL)
     stream_link = Var.URL + str(log_msg.message_id) + '/' +quote_plus(file_name) if file_name else ''
-    await m.reply_text(
+    await rm.reply_text(
         text="`{}`".format(stream_link),
         quote=True,
-        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Open', url=stream_link)]])
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('🕹️ Click Here to Download 🕹️', url=stream_link)]])
     )

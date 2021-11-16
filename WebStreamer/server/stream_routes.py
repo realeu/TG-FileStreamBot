@@ -38,7 +38,7 @@ async def stream_handler(request):
         pass
 
 
-async def media_streamer(request, chat_id: int, message_id: int):
+async def media_streamer(request, chat_id: str, message_id: int):
     range_header = request.headers.get('Range', 0)
     if chat_id == "meta":
         chat_id = Var.BIN_CHANNEL

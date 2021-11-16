@@ -23,11 +23,13 @@ async def root_route_handler(request):
                               "version": __version__})
 
 
-@routes.get(r"/{message_id:\S+}")
+@routes.get(r"/{chat_id}/{message_id:\S+}")
 async def stream_handler(request):
     try:
         message_id = request.match_info['message_id']
         message_id = int(re.search(r'(\d+)(?:\/\S+)?', message_id).group(1))
+        chat_id = request.match_info['chat_ids']
+        chat_id = str(re.search(r'(\S+)', chat_ids).group(1))
         return await media_streamer(request, message_id)
     except ValueError as e:
         logging.error(e)
@@ -36,9 +38,18 @@ async def stream_handler(request):
         pass
 
 
-async def media_streamer(request, message_id: int):
+async def media_streamer(request, chat_id: int, message_id: int):
     range_header = request.headers.get('Range', 0)
-    media_msg = await StreamBot.get_messages(Var.BIN_CHANNEL, message_id)
+    if chat_id == "meta":
+        chat_id = Var.BIN_CHANNEL
+    else:
+        chat_id = int(chat_id) if chat_id.isdigit() else chat_id
+        try:
+            chat_id = await StreamBot.get_chat(chat_id)
+        except:
+            return web.Response(text=f"Couldn't find entity for {chat_id}")
+
+    media_msg = await StreamBot.get_messages(chat_id, message_id)
     file_properties = await TGCustomYield().generate_file_properties(media_msg)
     file_size = file_properties.file_size
 

@@ -1,5 +1,6 @@
 # Taken from megadlbot_oss <https://github.com/eyaadh/megadlbot_oss/blob/master/mega/webserver/routes.py>
 # Thanks to Eyaadh <https://github.com/eyaadh>
+
 import re
 import time
 import math
@@ -7,6 +8,7 @@ import logging
 import secrets
 import mimetypes
 from aiohttp import web
+
 from WebStreamer.vars import Var
 from WebStreamer.bot import StreamBot
 from WebStreamer import StartTime, __version__, bot_info
@@ -28,9 +30,9 @@ async def stream_handler(request):
     try:
         message_id = request.match_info['message_id']
         message_id = int(re.search(r'(\d+)(?:\/\S+)?', message_id).group(1))
-        chat_id = request.match_info['chat_ids']
-        chat_id = str(re.search(r'(\S+)', chat_ids).group(1))
-        return await media_streamer(request, message_id)
+        chat_id = request.match_info['chat_id']
+        chat_id = str(re.search(r'(\S+)', chat_id).group(1))
+        return await media_streamer(request, chat_id, message_id)
     except ValueError as e:
         logging.error(e)
         raise web.HTTPNotFound
@@ -47,7 +49,8 @@ async def media_streamer(request, chat_id: str, message_id: int):
         try:
             chat_id = await StreamBot.get_chat(chat_id)
         except:
-            return web.Response(text=f"Couldn't find entity for {chat_id}")
+            logging.error(f"Chat {chat_id} could not be Identified.")
+            return web.HTTPNotFound
 
     media_msg = await StreamBot.get_messages(chat_id, message_id)
     file_properties = await TGCustomYield().generate_file_properties(media_msg)

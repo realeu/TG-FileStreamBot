@@ -47,10 +47,10 @@ async def media_streamer(request, chat_id: str, message_id: int):
     else:
         chat_id = int(chat_id) if chat_id.isdigit() else chat_id
         try:
-            chat_id = await StreamBot.get_chat(chat_id)
+            await StreamBot.get_chat(chat_id)
         except:
             logging.error(f"Chat {chat_id} could not be Identified.")
-            return web.HTTPNotFound
+            raise web.HTTPNotFound
 
     media_msg = await StreamBot.get_messages(chat_id, message_id)
     file_properties = await TGCustomYield().generate_file_properties(media_msg)

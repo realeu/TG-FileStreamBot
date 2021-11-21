@@ -5,6 +5,7 @@ from pyrogram import filters
 from WebStreamer.vars import Var
 from urllib.parse import quote_plus
 from WebStreamer.bot import StreamBot
+from WebStreamer import bot_info
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -19,12 +20,12 @@ def detect_type(x):
     else:
         return
 
-@StreamBot.on_message(filters.command("link") & filters.private, group=2)
+@StreamBot.on_message(filters.command(["link", f"link@{bot_info.username}"]))
 async def media_receive_handler(_, m: Message):
     rm = m.reply_to_message
     if not (rm and rm.media):
         return
-    if not (rm.document or rm.video or rm.audio):
+    if not (rm.document or rm.video or rm.audio or rm.sticker):
         return await rm.reply_text('Invalid Media!', quote=True)
     file_name = ''
     file = detect_type(rm)

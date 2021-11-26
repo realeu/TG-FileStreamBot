@@ -45,7 +45,9 @@ async def media_streamer(request, chat_id: str, message_id: int):
     if chat_id == "meta":
         chat_id = Var.BIN_CHANNEL
     else:
-        chat_id = int(chat_id) if chat_id.isdigit() else chat_id
+        try: chat_id = int(chat_id)
+        except: chat_id = str(chat_id)
+
         try:
             await StreamBot.get_chat(chat_id)
         except:

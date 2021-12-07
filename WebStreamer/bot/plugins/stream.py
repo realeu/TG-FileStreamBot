@@ -10,29 +10,25 @@ from pyrogram.types.messages_and_media import message
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 
-def detect_type(x):
-    if x.document:
-        return x.document
-    elif x.video:
-        return x.video
-    elif x.audio:
-        return x.audio
-    else:
-        return
+def get_filename(x):
+    ex = (
+        x.audio or x.animation x.photo or x.sticker \
+        or x.voice or x.video_note or x.video or x.document
+    )
+    if ex:
+        return ex.file_name or ""
+    return None
 
 @StreamBot.on_message(filters.command(["link", f"link@{bot_info.username}"]))
 async def media_receive_handler(_, m: Message):
     rm = m.reply_to_message
     if not (rm and rm.media):
         return
-    if not (rm.document or rm.video or rm.audio or rm.sticker):
-        return await rm.reply_text('Invalid Media!', quote=True)
-    file_name = ''
-    file = detect_type(rm)
-    if file:
-        file_name = file.file_name
+    file_name = get_filename(rm)
+    if file_name is None:
+        return
     log_msg = await rm.forward(chat_id=Var.BIN_CHANNEL)
-    stream_link = Var.URL + 'meta/' + str(log_msg.message_id) + '/' + quote_plus(file_name) if file_name else ''
+    stream_link = Var.URL + 'meta/' + str(log_msg.message_id) + '/' + quote_plus(file_name)
     await rm.reply_text(
         text="`{}`".format(stream_link),
         quote=True,

@@ -12,7 +12,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 def get_filename(x):
     ex = (
-        x.audio or x.animation x.photo or x.sticker \
+        x.audio or x.animation or x.photo or x.sticker \
         or x.voice or x.video_note or x.video or x.document
     )
     if ex:

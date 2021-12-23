@@ -16,7 +16,10 @@ def get_filename(x):
         or x.voice or x.video_note or x.video or x.document
     )
     if ex:
-        return ex.file_name or ""
+        try:
+            return ex.file_name
+        except AttributeError:
+            return ""
     return None
 
 @StreamBot.on_message(filters.command(["link", f"link@{bot_info.username}"]))

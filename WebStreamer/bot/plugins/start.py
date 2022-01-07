@@ -7,13 +7,13 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
 @StreamBot.on_message(filters.command(['start', 'help']))
 async def start(_, m: Message):
-    await m.reply(f'**Hemlo {m.from_user.mention(style="md")} 😌**
+    await m.reply(f"""**Hemlo {m.from_user.mention(style="md")} 😌**
 
 **Send any file to get a shareable link...😌**
 
 __Note: Inappropriate (NSFW) contents will be deleted as soon as it’s noticed 🙂__
 
-**With ❤️ by @MarineBots**',
+**With ❤️ by @MarineBots**""",
                   reply_markup=InlineKeyboardMarkup(
                       [[
                             InlineKeyboardButton(

@@ -1,6 +1,6 @@
 FROM python:3.9
 
-RUN git clone https://github.com/realeu/TG-FileStreamBot.git root/realeu
+RUN git clone https://github.com/realeu/TG-FileStreamBot root/realeu
 WORKDIR root/realeu/
 
 RUN cd WebStreamer

@@ -13,7 +13,7 @@ async def start(_, m: Message):
 
 __Note: Inappropriate (NSFW) contents will be deleted as soon as it’s noticed 🙂__
 
-**With ❤️ by @MarineBots😁**""",
+**With ❤️ by @MarineBots**""",
                   reply_markup=InlineKeyboardMarkup(
                       [[
                             InlineKeyboardButton(
